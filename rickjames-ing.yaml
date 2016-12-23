@@ -1,0 +1,12 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: glueflakes
+spec:
+  rules:
+    - host: glueflakes.com
+      http:
+        paths:
+          - backend:
+              serviceName: testpage
+              servicePort: 80

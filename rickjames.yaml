@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rickjames
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        k8s-app: rickjames
+        app: rickjames
+    spec:
+      containers:
+      - name: rickjames
+        image: vallard/rickjames:{{ build.number }}
+        env:
+        - name: SPARK_TOKEN
+          value: 
+        - name: 
+        ports:
+        - containerPort: 8080

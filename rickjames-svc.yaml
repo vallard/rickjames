@@ -1,0 +1,21 @@
+# we make these node ports then update the node ports in the external nginx 
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: rickjames
+    kubernetes.io/cluster-service: "true"
+  name: rickjames
+  #namespace: kube-system
+spec:
+  ports:
+  - port: 8080
+    name: http
+    protocol: TCP
+  selector:
+    k8s-app: rickjames
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}
