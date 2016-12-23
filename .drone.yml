@@ -1,0 +1,37 @@
+workspace:
+  base: /go
+
+pipeline:
+  notify:
+    image: vallard/drone-spark
+    room: "CI Builds"
+    template: "Starting build { build.number }} for { repo.owner }}/{ repo.name }} for {build.author}}."
+
+  test:
+    image: golang:1.6
+    environment:
+      - CGO_ENABLED=0
+    commands:
+      - go vet
+      - go test -cover -coverprofile=coverage.out
+      - go build -ldflags "-s -w -X main.build=$DRONE_BUILD_NUMBER" -a -tags netgo
+
+  latest:
+    image: plugins/docker
+    repo: vallard/rickjames
+    tags: 
+      - "${DRONE_BUILD_NUMBER}"
+      - latest
+    when:
+      branch: master
+      event: push
+    
+  deploy:
+    image: vallard/drone-kube
+    template: rickjames.yaml
+
+  notify:
+    image: vallard/drone-spark
+    room: "CI Builds"
+    when:
+      status: [ success, failure ]
