@@ -4,9 +4,9 @@ metadata:
   name: glueflakes
 spec:
   rules:
-    - host: glueflakes.com
+    - host: rickjames.glueflakes.com
       http:
         paths:
           - backend:
-              serviceName: testpage
+              serviceName: rickjames
               servicePort: 80

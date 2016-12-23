@@ -5,7 +5,7 @@ pipeline:
   notify:
     image: vallard/drone-spark
     room: "CI Builds"
-    template: "Starting build { build.number }} for { repo.owner }}/{ repo.name }} for {build.author}}."
+    template: "Starting build {{ build.number }} for {{ repo.owner }}/{{ repo.name }} for {{build.author}}."
 
   test:
     image: golang:1.6
