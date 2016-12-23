@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: glueflakes
+  name: rickjames.glueflakes
 spec:
   rules:
     - host: rickjames.glueflakes.com
@@ -9,4 +9,4 @@ spec:
         paths:
           - backend:
               serviceName: rickjames
-              servicePort: 80
+              servicePort: 8080
