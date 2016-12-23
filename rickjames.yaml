@@ -15,7 +15,13 @@ spec:
         image: vallard/rickjames:{{ build.number }}
         env:
         - name: SPARK_TOKEN
-          value: 
-        - name: 
+          valueFrom:
+            secretKeyRef:
+              name: rickjames-secrets
+              key: SPARK_TOKEN
+        - name: KEYWORD
+          value: "hello"
+        - name: RESPONSE
+          value: "Hello back to you my friend!"
         ports:
         - containerPort: 8080
