@@ -82,12 +82,14 @@ func handleWebhook(w spark.Webhook) {
 	log.Printf("Message Text is:  %s\n", message.Text)
 	bot.RoomId = message.RoomId
 	if strings.Contains(message.Text, bot.Keyword) {
-		err := sendHello()
-		if err != nil {
-			log.Println(err)
-		}
+		log.Println("Someone said hello to me")
 	} else {
 		log.Printf("Someone mentioned me, but didn't say the magic word: %s\n", bot.Keyword)
+	}
+	// say hello anyway
+	err := sendHello()
+	if err != nil {
+		log.Println(err)
 	}
 
 }
