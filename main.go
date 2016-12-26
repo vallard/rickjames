@@ -75,6 +75,7 @@ func sendHello() error {
 }
 
 func handleWebhook(w spark.Webhook) {
+	fmt.Printf("this is the data: %s\n", w.Data)
 	// see if there is a message with this spark webhook.
 	message := getMessage(w.Data)
 	log.Printf("Handling webhook for spark bot.  Message:  %v\n", message)
