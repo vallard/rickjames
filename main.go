@@ -78,13 +78,17 @@ func handleWebhook(w spark.Webhook) {
 	// see if there is a message with this spark webhook.
 	message := getMessage(w.Data)
 	log.Printf("Handling webhook for spark bot.  Message:  %v\n", message)
+	log.Printf("Message Text is:  %s\n", message.Text)
 	bot.RoomId = message.RoomId
 	if strings.Contains(message.Text, bot.Keyword) {
 		err := sendHello()
 		if err != nil {
 			log.Println(err)
 		}
+	} else {
+		log.Printf("Someone mentioned me, but didn't say the magic word: %s\n", bot.Keyword)
 	}
+
 }
 
 func main() {
@@ -127,7 +131,7 @@ func run(c *cli.Context) error {
 	}
 
 	http.HandleFunc("/spark-hook", func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("Got a message:\n  %v\n\n", r)
+		log.Printf("Got a request:\n  %v\n\n", r)
 		if r.Method == "POST" {
 			dec := json.NewDecoder(r.Body)
 			for {
