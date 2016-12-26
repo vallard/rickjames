@@ -77,6 +77,7 @@ func sendHello() error {
 func handleWebhook(w spark.Webhook) {
 	// see if there is a message with this spark webhook.
 	message := getMessage(w.Data)
+	log.Printf("Handling webhook for spark bot.  Message:  %v\n", message)
 	bot.RoomId = message.RoomId
 	if strings.Contains(message.Text, bot.Keyword) {
 		err := sendHello()

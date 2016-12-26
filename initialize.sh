@@ -1,0 +1,1 @@
+curl -X POST https://api.ciscospark.com/v1/webhooks -d '{ "name" : "Rick James", "targetUrl" : "http://rickjames.glueflakes.com/spark-hook", "resource" : "all", "event" : "all" }' -H "Authorization:  Bearer $SPARK_TOKEN" -H "Content-Type: application/json"}
