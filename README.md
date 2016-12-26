@@ -4,3 +4,6 @@ A Basic [sparkbot](https://developer.ciscospark.com) to deploy on Kubernetes.
 
 
 Hook is: http://rickjames.glueflakes.com/spark-hook
+
+## Initialize	
+The initialize script is to deploy a webhook that starts the bot listening for events.  

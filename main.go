@@ -126,6 +126,7 @@ func run(c *cli.Context) error {
 	}
 
 	http.HandleFunc("/spark-hook", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Got a message:\n  %v\n\n", r)
 		if r.Method == "POST" {
 			dec := json.NewDecoder(r.Body)
 			for {
