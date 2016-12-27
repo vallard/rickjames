@@ -25,7 +25,7 @@ type BotConfig struct {
 var build = "1"
 var bot BotConfig
 
-func getMessage(data map[string]interface{}) spark.Message {
+func getMessageInfo(data map[string]interface{}) spark.Message {
 	var m spark.Message
 	for k, v := range data {
 		// make sure the value is of type string.
@@ -49,7 +49,7 @@ func getMessage(data map[string]interface{}) spark.Message {
 			case "html":
 				m.Html = vv
 			case "created":
-				tt, err := time.Parse("2006-01-02T03:04:05+00:00", vv)
+				tt, err := time.Parse("2006-01-02T03:04:05+00:00Z", vv)
 				if err == nil {
 					m.Created = tt
 				}
@@ -77,7 +77,10 @@ func sendHello() error {
 func handleWebhook(w spark.Webhook) {
 	fmt.Printf("this is the data: %v\n", w.Data)
 	// see if there is a message with this spark webhook.
-	message := getMessage(w.Data)
+	message := getMessageInfo(w.Data)
+
+	// once we have the message information, we need to request the message contents.
+
 	log.Printf("Handling webhook for spark bot.  Message:  %v\n", message)
 	log.Printf("Message Text is:  %s\n", message.Text)
 	bot.RoomId = message.RoomId
@@ -91,7 +94,6 @@ func handleWebhook(w spark.Webhook) {
 	if err != nil {
 		log.Println(err)
 	}
-
 }
 
 func main() {
