@@ -70,7 +70,10 @@ func sendHello() error {
 		RoomId: bot.RoomId,
 		Text:   bot.Response,
 	}
-	_, err := s.CreateMessage(newMessage)
+	m, err := s.CreateMessage(newMessage)
+	if err != nil {
+		log.Printf("Unable to create message.\nM: %v\n", m)
+	}
 	return err
 }
 
