@@ -79,10 +79,13 @@ func handleWebhook(w spark.Webhook) {
 	// see if there is a message with this spark webhook.
 	message := getMessageInfo(w.Data)
 
-	// once we have the message information, we need to request the message contents.
-	bot.RoomId = message.RoomId
-	log.Printf("Room id: %s\n", bot.RoomId)
-	m, err := s.GetMessage(message.RoomId)
+	// assuming we have a message from the data, see if we can get it.
+	if message.Id == "" || message.RoomId == "" {
+		log.Println("message had no ID or RoomID associated with it.")
+		return
+	}
+
+	m, err := s.GetMessage(message.Id)
 	if err != nil {
 		log.Println(err)
 		return
@@ -91,7 +94,9 @@ func handleWebhook(w spark.Webhook) {
 	//log.Printf("Room Id: %s\n", bot.RoomId)
 	if strings.Contains(strings.ToLower(m.Text),
 		strings.ToLower(bot.Keyword)) {
-		log.Println("Someone said hello to me")
+		log.Println("Someone said the key word to me")
+		// set the bot room ID of where we'll send our message.
+		bot.RoomId = message.RoomId
 		err = sendHello()
 		if err != nil {
 			log.Println(err)
