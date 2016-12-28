@@ -22,6 +22,7 @@ type BotConfig struct {
 }
 
 var build = "1"
+var s *spark.Spark
 var bot BotConfig
 
 func getMessageInfo(data map[string]interface{}) spark.Message {
@@ -48,7 +49,7 @@ func getMessageInfo(data map[string]interface{}) spark.Message {
 			case "html":
 				m.Html = vv
 			case "created":
-				tt, err := time.Parse("2006-01-02T03:04:05+00:00Z", vv)
+				tt, err := time.Parse("2006-01-02T03:04:05.000Z", vv)
 				if err == nil {
 					m.Created = tt
 				}
@@ -61,9 +62,7 @@ func getMessageInfo(data map[string]interface{}) spark.Message {
 }
 
 func sendHello() error {
-	// create a new spark client
-	s := spark.New(bot.Token)
-
+	log.Println("Calling Send Hello")
 	// create a new message
 	newMessage := spark.Message{
 		RoomId: bot.RoomId,
@@ -77,24 +76,28 @@ func sendHello() error {
 }
 
 func handleWebhook(w spark.Webhook) {
-	fmt.Printf("this is the data: %v\n", w.Data)
 	// see if there is a message with this spark webhook.
 	message := getMessageInfo(w.Data)
 
 	// once we have the message information, we need to request the message contents.
-
-	log.Printf("Handling webhook for spark bot.  Message:  %v\n", message)
-	log.Printf("Message Text is:  %s\n", message.Text)
 	bot.RoomId = message.RoomId
-	if strings.Contains(message.Text, bot.Keyword) {
-		log.Println("Someone said hello to me")
-	} else {
-		log.Printf("Someone mentioned me, but didn't say the magic word: %s\n", bot.Keyword)
-	}
-	// say hello anyway
-	err := sendHello()
+	log.Printf("Room id: %s\n", bot.RoomId)
+	m, err := s.GetMessage(message.RoomId)
 	if err != nil {
 		log.Println(err)
+		return
+	}
+
+	//log.Printf("Room Id: %s\n", bot.RoomId)
+	if strings.Contains(strings.ToLower(m.Text),
+		strings.ToLower(bot.Keyword)) {
+		log.Println("Someone said hello to me")
+		err = sendHello()
+		if err != nil {
+			log.Println(err)
+		}
+	} else {
+		log.Printf("Someone mentioned me, but didn't say the magic word: %s\n", bot.Keyword)
 	}
 }
 
@@ -137,15 +140,17 @@ func run(c *cli.Context) error {
 		bot.Response = c.String("response")
 	}
 
+	// set up our spark client.  Only want one of these.
+	s = spark.New(bot.Token)
+
 	http.HandleFunc("/spark-hook", func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Got a request:\n  %v\n\n", r)
 		if r.Method == "POST" {
-			dec := json.NewDecoder(r.Body)
-			for dec.More() {
+			decoder := json.NewDecoder(r.Body)
+			for {
 				var wh spark.Webhook
-				err := dec.Decode(&wh)
-				if err != nil {
-					log.Println(err)
+				if err := decoder.Decode(&wh); err != nil {
+					break
 				}
 				// do something with the message.
 				handleWebhook(wh)
