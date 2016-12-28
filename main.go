@@ -142,16 +142,14 @@ func run(c *cli.Context) error {
 		log.Printf("Got a request:\n  %v\n\n", r)
 		if r.Method == "POST" {
 			dec := json.NewDecoder(r.Body)
-			for {
-				var wh spark.Webhook
-				if err := dec.Decode(&wh); err == io.EOF {
-					break
-				} else if err != nil {
-					log.Println(err)
-				}
-				// do something with the message.
-				handleWebhook(wh)
+			var wh spark.Webhook
+			if err := dec.Decode(&wh); err == io.EOF {
+				break
+			} else if err != nil {
+				log.Println(err)
 			}
+			// do something with the message.
+			handleWebhook(wh)
 		}
 		fmt.Fprintf(w, "Thanks for playing, %q\n", r.RequestURI)
 	})
