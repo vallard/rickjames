@@ -90,7 +90,7 @@ func handleWebhook(w spark.Webhook) {
 		log.Println(err)
 		return
 	}
-
+	log.Println("Someone sent the message: %s\n", m.Text)
 	//log.Printf("Room Id: %s\n", bot.RoomId)
 	if strings.Contains(strings.ToLower(m.Text),
 		strings.ToLower(bot.Keyword)) {

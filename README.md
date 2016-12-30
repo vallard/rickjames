@@ -8,6 +8,17 @@ Hook is: http://rickjames.glueflakes.com/spark-hook
 ## Initialize	
 The initialize script is to deploy a webhook that starts the bot listening for events.  
 
+Create the webhook: 
+
+```
+curl -H "Authorization: Bearer $SPARK_TOKEN" -H "Content-Type: application/json" https://api.ciscospark.com/v1/webhooks -d '{"name" : "rick james", "targetUrl" : "http://rickjames.glueflakes.com/spark-hook", "resource" : "messages", "event" : "created" }'
+```
+
+List the webhooks: 
+```
+curl -H "Authorization: Bearer $SPARK_TOKEN" \
+https://api.ciscospark.com/v1/webhooks | jq
+```
 
 Test it out: 
 
