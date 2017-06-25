@@ -20,7 +20,7 @@ spec:
               name: rickjames-secrets
               key: SPARK_TOKEN
         - name: KEYWORD
-          value: "hello"
+          value: "/hello"
         - name: RESPONSE
           value: "Hello back to you my friend!"
         ports:

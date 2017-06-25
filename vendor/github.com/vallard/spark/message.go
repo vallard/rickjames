@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"log"
 	"net/url"
 	"time"
 )
@@ -12,14 +11,15 @@ import (
 const MessagesUrl = "https://api.ciscospark.com/v1/messages"
 
 type Message struct {
-	Id          string `json:"id,omitempty"`
-	RoomId      string `json:"roomId,omitempty"`
-	RoomType    string `json:"roomType,omitempty"`
-	Text        string `json:"text,omitempty"`
-	PersonId    string `json:"personId,omitempty"`
-	PersonEmail string `json:"personEmail,omitempty"`
-	Markdown    string `json:"markdown,omitempty"`
-	Html        string `json:"html,omitempty"`
+	Id          string   `json:"id,omitempty"`
+	RoomId      string   `json:"roomId,omitempty"`
+	RoomType    string   `json:"roomType,omitempty"`
+	Text        string   `json:"text,omitempty"`
+	PersonId    string   `json:"personId,omitempty"`
+	PersonEmail string   `json:"personEmail,omitempty"`
+	Markdown    string   `json:"markdown,omitempty"`
+	Html        string   `json:"html,omitempty"`
+	Files       []string `json:"files,omitempty"`
 	//Created     time.Time `json:"created,omitempty"`
 	Created time.Time `json:"-"`
 }
@@ -59,7 +59,6 @@ func (s *Spark) GetMessage(messageId string) (Message, error) {
 		return m, errors.New("Please include message ID")
 	}
 	u := MessagesUrl + "/" + messageId
-	log.Println(u)
 	bytes, err := s.GetRequest(u, &url.Values{})
 	if err != nil {
 		return m, err

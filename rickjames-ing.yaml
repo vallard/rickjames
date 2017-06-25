@@ -1,12 +1,13 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: rickjames.glueflakes
+  name: bot.rickjames
 spec:
   rules:
-    - host: rickjames.glueflakes.com
+    - host: bots.ciscopipeline.io
       http:
         paths:
           - backend:
               serviceName: rickjames
               servicePort: 8080
+            path: /vallard/rickjames

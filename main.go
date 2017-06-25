@@ -2,23 +2,37 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"reflect"
 	"strings"
 	"time"
 
-	"github.com/urfave/cli"
 	"github.com/vallard/spark"
 )
 
 type BotConfig struct {
+	Id       string // id of the bot for logging
+	UserId   string // id of the user for logging.
 	Token    string
-	Keyword  string
-	Response string
+	Email    string
+	SparkId  string
+	Commands []string
+	Actions  map[string]func(string) error
 	RoomId   string
+}
+
+func (b *BotConfig) Respond(input string) error {
+	for _, cmd := range b.Commands {
+		if strings.Contains(strings.ToLower(input),
+			strings.ToLower(cmd)) {
+			// we have a match!
+			return b.Actions[cmd](input)
+		}
+	}
+	return errors.New("No response for this command: " + input)
 }
 
 var build = "1"
@@ -61,14 +75,10 @@ func getMessageInfo(data map[string]interface{}) spark.Message {
 	return m
 }
 
-func sendHello() error {
-	log.Println("Calling Send Hello")
+// note: logging and billing should only be done here if we respond.
+func sendResponse(message spark.Message) error {
 	// create a new message
-	newMessage := spark.Message{
-		RoomId: bot.RoomId,
-		Text:   bot.Response,
-	}
-	m, err := s.CreateMessage(newMessage)
+	m, err := s.CreateMessage(message)
 	if err != nil {
 		log.Printf("Unable to create message.\nM: %v\n", m)
 	}
@@ -90,79 +100,79 @@ func handleWebhook(w spark.Webhook) {
 		log.Println(err)
 		return
 	}
-	log.Printf("Someone sent the message: %s\n", m.Text)
-	//log.Printf("Room Id: %s\n", bot.RoomId)
-	if strings.Contains(strings.ToLower(m.Text),
-		strings.ToLower(bot.Keyword)) {
-		log.Println("Someone said the key word to me")
-		// set the bot room ID of where we'll send our message.
-		bot.RoomId = message.RoomId
-		err = sendHello()
-		if err != nil {
-			log.Println(err)
-		}
-	} else {
-		log.Printf("Someone mentioned me, but didn't say the magic word: %s\n", bot.Keyword)
+
+	if m.PersonId == bot.SparkId {
+		log.Println("Ignoring message from myself")
+		return
 	}
+
+	log.Printf("Got a message from %s.  It says: %s\n", m.PersonEmail, m.Text)
+	bot.RoomId = message.RoomId
+	err = bot.Respond(m.Text)
 }
 
 func main() {
-	app := cli.NewApp()
-	app.Name = "sparkbot maker"
-	app.Usage = "spark bot maker"
-	app.Action = run
-	app.Version = fmt.Sprintf("0.%s", build)
-	app.Flags = []cli.Flag{
-		cli.StringFlag{
-			Name:   "token",
-			Usage:  "token of spark bot",
-			EnvVar: "SPARK_TOKEN",
-		},
-		cli.StringFlag{
-			Name:   "keyword",
-			Usage:  "keyword to look for",
-			EnvVar: "KEYWORD",
-		},
-		cli.StringFlag{
-			Name:   "response",
-			Usage:  "response you want for when keyword is found",
-			EnvVar: "RESPONSE",
-		},
-	}
-	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err)
-	}
-}
 
-func run(c *cli.Context) error {
-	bot.Token = c.String("token")
-	bot.Keyword = "hello"
-	bot.Response = "hello back to you my friend!"
-	if c.String("keyword") != "" {
-		bot.Keyword = c.String("keyword")
-	}
-	if c.String("response") != "" {
-		bot.Response = c.String("response")
+	// token will be validated before getting to this point as the bot needs to be registered.
+	/* variables that will be subbed per each bot.  */
+	bot.Token = "NmMxMTc4OTItNDhlMS00ZjNkLWI0ZWUtMDkwYTJhNGIzNGNjZjJhNGQ5ZTYtNWFk"
+	bot.Commands = []string{"/help", "/code"}
+	bot.Id = "5882607b0000000000000000"
+	bot.UserId = "000000169293000000169293"
+	bot.Email = "berlin@sparkbot.io"
+	bot.SparkId = "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8yYmQzNzNiZS00ODY2LTQxYzUtYTZlNC1jODBlZTU5MmM2ZjI"
+
+	bot.Actions = map[string]func(string) error{
+
+		"/help": f0,
+
+		"/code": f1,
 	}
 
 	// set up our spark client.  Only want one of these.
 	s = spark.New(bot.Token)
 
-	http.HandleFunc("/spark-hook", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Got a request:\n  %v\n\n", r)
 		if r.Method == "POST" {
 			decoder := json.NewDecoder(r.Body)
 			for {
 				var wh spark.Webhook
 				if err := decoder.Decode(&wh); err != nil {
+					log.Print(err)
 					break
 				}
 				// do something with the message.
 				handleWebhook(wh)
 			}
 		}
-		fmt.Fprintf(w, "Thanks for playing, %q\n", r.RequestURI)
+		if r.Method == "GET" {
+			fmt.Fprintf(w, "I'm alive and waiting for spark webhooks!")
+
+		}
 	})
 
-	return http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8080", nil)
+}
+
+// action: consists of Command, Code, Text, Language
+
+func f0(str string) error {
+
+	newMessage := spark.Message{
+		RoomId: bot.RoomId,
+		Text:   "I can tell you about /berlin and /tiergarten",
+	}
+	return sendResponse(newMessage)
+
+}
+
+func f1(str string) error {
+
+	newMessage := spark.Message{
+		RoomId:   bot.RoomId,
+		Markdown: "## Code\n```\ngo run main.go\n```",
+	}
+	return sendResponse(newMessage)
+
 }

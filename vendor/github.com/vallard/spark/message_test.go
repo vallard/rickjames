@@ -1,6 +1,7 @@
 package spark
 
 import (
+	"fmt"
 	"net/url"
 	"testing"
 )
@@ -23,6 +24,7 @@ func TestListMessages(t *testing.T) {
 	}
 
 	uv := url.Values{}
+	fmt.Println("Title: ", allRooms[0].Title)
 	uv.Add("roomId", allRooms[0].Id)
 	allMessages, err := s.ListMessages(&uv)
 
@@ -31,7 +33,8 @@ func TestListMessages(t *testing.T) {
 	}
 
 	if len(allMessages) < 1 {
-		t.Error("Expected there to be at least one message in the room")
+		t.Fatal("Expected there to be at least one message in the room")
+
 	}
 
 	// test Get messages
@@ -51,7 +54,7 @@ func TestCreateMessage(t *testing.T) {
 	room := allRooms[0]
 	m := Message{
 		RoomId: room.Id,
-		Text:   "sorry, just a quick test",
+		Text:   "I'll test as much as I want. I'm Rick James.  Get up!",
 	}
 	rm, err := s.CreateMessage(m)
 	if err != nil {
@@ -59,5 +62,14 @@ func TestCreateMessage(t *testing.T) {
 	}
 	if m.Text != rm.Text {
 		t.Errorf("titles of return message %s should be the same as original: %s", m.Text, rm.Text)
+	}
+
+	m2 := Message{
+		RoomId: room.Id,
+		Files:  []string{"http://www.aspca.org/sites/default/files/cat-care_cat-nutrition-tips_overweight_body4_left.jpg"},
+	}
+	_, err = s.CreateMessage(m2)
+	if err != nil {
+		t.Error(err)
 	}
 }
