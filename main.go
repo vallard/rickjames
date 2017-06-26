@@ -47,6 +47,7 @@ var src = rand.NewSource(time.Now().Unix())
 var r = rand.New(src)
 
 func (b *BotConfig) Respond(input string) error {
+	asdf
 	newMessage := spark.Message{
 		RoomId: bot.RoomId,
 		//Files:  []string{"http://ilosm.cdnize.com/wp-content/uploads/620-rick-james-music-facts.imgcache.rev1406146254157.web_.jpg"},
