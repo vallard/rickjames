@@ -115,7 +115,7 @@ func main() {
 
 	// token will be validated before getting to this point as the bot needs to be registered.
 	/* variables that will be subbed per each bot.  */
-	bot.Token = "NmMxMTc4OTItNDhlMS00ZjNkLWI0ZWUtMDkwYTJhNGIzNGNjZjJhNGQ5ZTYtNWFk"
+	bot.Token = "M2I1MGZmNWUtYWJjMy00ZjJjLTgwZmYtZjBmN2M5MGQ3MmEyYTQ1YzU3N2UtYjM0"
 	bot.Commands = []string{"/help", "/code"}
 	bot.Id = "5882607b0000000000000000"
 	bot.UserId = "000000169293000000169293"
