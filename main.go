@@ -107,7 +107,7 @@ func handleWebhook(w spark.Webhook) {
 		return
 	}
 
-	if m.PersonId == bot.SparkId {
+	if m.PersonEmail == bot.Email {
 		log.Println("Ignoring message from myself")
 		return
 	}
@@ -125,7 +125,7 @@ func main() {
 	bot.Commands = []string{"/help", "/code"}
 	bot.Id = "5882607b0000000000000000"
 	bot.UserId = "000000169293000000169293"
-	bot.Email = "berlin@sparkbot.io"
+	bot.Email = "rickjames@sparkbot.io"
 	bot.SparkId = "Y2lzY29zcGFyazovL3VzL1BFT1BMRS8yYmQzNzNiZS00ODY2LTQxYzUtYTZlNC1jODBlZTU5MmM2ZjI"
 
 	bot.Actions = map[string]func(string) error{
