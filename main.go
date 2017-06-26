@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"reflect"
 	"time"
@@ -22,23 +23,27 @@ type BotConfig struct {
 	RoomId   string
 }
 
+var pics = [...]string{
+	"http://ilosm.cdnize.com/wp-content/uploads/620-rick-james-music-facts.imgcache.rev1406146254157.web_.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/4/4b/Rick_James_in_Lifestyles_of_the_Rich_1984.JPG",
+}
+
+var quotes = [...]string{
+	"How you doing sugar?",
+	"She's a very kinky girl, The kind you don't take home to mother",
+}
+
 func (b *BotConfig) Respond(input string) error {
+	s := rand.NewSource(time.Now().Unix())
+	r := rand.New(s)
 	newMessage := spark.Message{
 		RoomId: bot.RoomId,
-		Files:  []string{"http://ilosm.cdnize.com/wp-content/uploads/620-rick-james-music-facts.imgcache.rev1406146254157.web_.jpg"},
-		Text:   "Hey Baby",
+		//Files:  []string{"http://ilosm.cdnize.com/wp-content/uploads/620-rick-james-music-facts.imgcache.rev1406146254157.web_.jpg"},
+		//Text:  "Hey Baby",
+		Files: []string{pics[r.Intn(len(pics))]},
+		Text:  quotes[r.Intn(len(quotes))],
 	}
 	return sendResponse(newMessage)
-	/*
-		for _, cmd := range b.Commands {
-			if strings.Contains(strings.ToLower(input),
-				strings.ToLower(cmd)) {
-				// we have a match!
-				return b.Actions[cmd](input)
-			}
-		}
-		return errors.New("No response for this command: " + input)
-	*/
 }
 
 var build = "1"
