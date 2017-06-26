@@ -31,11 +31,18 @@ var pics = [...]string{
 var quotes = [...]string{
 	"How you doing sugar?",
 	"She's a very kinky girl, The kind you don't take home to mother",
+	"I betcha I'll make you holler.",
+	"Now is my time.  Everything I've done up to this point is just a warm up. This is where it all begins.",
+	"If anything I consider myself non-violent.  I'm from the hippy era, peace, love, groovy.",
+	"Get up on this funk!",
+	"We're gonna dance on the funk and make love on this song.",
+	"Punk Funk means to be one with yourself. To be rebellious, aggressive, able to do and say what you feel at all times, without inflicting mental or spiritual pain.",
 }
 
+var src = rand.NewSource(time.Now().Unix())
+var r = rand.New(src)
+
 func (b *BotConfig) Respond(input string) error {
-	s := rand.NewSource(time.Now().Unix())
-	r := rand.New(s)
 	newMessage := spark.Message{
 		RoomId: bot.RoomId,
 		//Files:  []string{"http://ilosm.cdnize.com/wp-content/uploads/620-rick-james-music-facts.imgcache.rev1406146254157.web_.jpg"},
