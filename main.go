@@ -2,12 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"reflect"
-	"strings"
 	"time"
 
 	"github.com/vallard/spark"
@@ -25,14 +23,22 @@ type BotConfig struct {
 }
 
 func (b *BotConfig) Respond(input string) error {
-	for _, cmd := range b.Commands {
-		if strings.Contains(strings.ToLower(input),
-			strings.ToLower(cmd)) {
-			// we have a match!
-			return b.Actions[cmd](input)
-		}
+	newMessage := spark.Message{
+		RoomId: bot.RoomId,
+		Files:  []string{"http://ilosm.cdnize.com/wp-content/uploads/620-rick-james-music-facts.imgcache.rev1406146254157.web_.jpg"},
+		Text:   "Hey Baby",
 	}
-	return errors.New("No response for this command: " + input)
+	return sendResponse(newMessage)
+	/*
+		for _, cmd := range b.Commands {
+			if strings.Contains(strings.ToLower(input),
+				strings.ToLower(cmd)) {
+				// we have a match!
+				return b.Actions[cmd](input)
+			}
+		}
+		return errors.New("No response for this command: " + input)
+	*/
 }
 
 var build = "1"
