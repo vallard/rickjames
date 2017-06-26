@@ -25,6 +25,8 @@ type BotConfig struct {
 
 var pics = [...]string{
 	"http://ilosm.cdnize.com/wp-content/uploads/620-rick-james-music-facts.imgcache.rev1406146254157.web_.jpg",
+	"https://s-media-cache-ak0.pinimg.com/originals/b4/7c/b7/b47cb74aefd12240acc9b12519f7868a.jpg",
+	"http://ilosm.cdnize.com/wp-content/uploads/rick4.jpg",
 	"https://upload.wikimedia.org/wikipedia/commons/4/4b/Rick_James_in_Lifestyles_of_the_Rich_1984.JPG",
 }
 
@@ -37,6 +39,8 @@ var quotes = [...]string{
 	"Get up on this funk!",
 	"We're gonna dance on the funk and make love on this song.",
 	"Punk Funk means to be one with yourself. To be rebellious, aggressive, able to do and say what you feel at all times, without inflicting mental or spiritual pain.",
+	"I've had it all. I've done it all. I've seen it all.",
+	"Funkers are people who dig the funk; Little funkers, Big funkers, Old funkers, Young funkers, Foxy funkers, Mother funkers, Papa funkers.",
 }
 
 var src = rand.NewSource(time.Now().Unix())
